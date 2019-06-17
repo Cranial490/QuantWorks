@@ -24,6 +24,9 @@ class Storage:
                       trailing_stoploss=None,
                       tag=None):
         params = locals()
+        index = order_book.shape[0]
+        order_book.loc[index] = list(params.values())
+        return index
 
 
 
