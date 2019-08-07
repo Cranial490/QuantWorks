@@ -128,6 +128,9 @@ class Orders:
     def cancel_orders(self):
         pass
 
+    def cancel_orders(self):
+        pass
+
 
 
 

@@ -1,9 +1,11 @@
 import pandas as pd
 class Storage:
+    columns = []
+    dataframe = pd.DataFrame()
 
     def execute_order(self, ):
         params = locals()
-        pd.DataFrame    
+
 
 
 # this function returns index of the order
