@@ -38,5 +38,8 @@ Equity margin calculator
 https://zerodha.com/margin-calculator/Commodity/
 Commodities margin calculator
 
+https://kite.trade/forum/discussion/4568/program-to-convert-tick-data-into-ohlc-data
+Convert tick data to ohlc data
+
 
 
