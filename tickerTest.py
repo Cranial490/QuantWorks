@@ -12,7 +12,7 @@ def tokenList(kite):
 
 logging.basicConfig(level=logging.DEBUG)
 
-api_key = "lu3hm9qavt86o9uq"
+api_key = "irtkrxee8bs6fecn"
 access_token = Retriever.getAccessToken()
 time.sleep(5)
 kite = KiteConnect(api_key=api_key)
