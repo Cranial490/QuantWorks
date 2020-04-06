@@ -1,13 +1,20 @@
+"""
+DataFetch.py
+
+Fetches historical candle data for instruments and writes into a csv file.
+"""
 from kiteconnect import KiteConnect
 import Retriever
 import os
 from os import path
 import csv
+import util
 
 
-def setup_kite_instance():
+def setup_kite_instance(localPath):
     # get api_key from config file
-    api_key = "irtkrxee8bs6fecn"
+    configParser = util.fetch_config()
+    api_key = util.get_config(configParser,'connection','api_key')
     kite = KiteConnect(api_key=api_key)
     access_token = Retriever.getAccessToken()
     try:
@@ -15,8 +22,6 @@ def setup_kite_instance():
     except Exception as e:
         print(e, "Error while setting access token")
     return kite
-
-# fetching historical data
 
 
 def get_historical_records():
@@ -26,14 +31,6 @@ def get_historical_records():
     except Exception as e:
         print(e)
 
-
-# def write_to_csv(candleData):
-#     with open(path.join(args.path, name + '.csv'), 'w') as the_file:
-#         fieldnames = ['date', 'open', 'high', 'low', 'close', 'volume', 'oi']
-#         writer = csv.DictWriter(the_file, fieldnames=fieldnames)
-#         writer.writeheader()
-#         for line in candleData:
-#             writer.writerow(line)
 def write_to_csv(candleData, localPath, instrument):
     if path.exists(localPath):
         print("Directory already exists")
@@ -45,7 +42,6 @@ def write_to_csv(candleData, localPath, instrument):
         writer.writeheader()
         for line in candleData:
             writer.writerow(line)
-
 
 def main():
     print("fetching records ....")

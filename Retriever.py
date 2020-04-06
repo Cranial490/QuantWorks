@@ -9,6 +9,7 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from kiteconnect import KiteConnect
+import util
 
 
 def getRequestToken(ResponseUrl):
@@ -18,17 +19,17 @@ def getRequestToken(ResponseUrl):
     return tokenString[tokenString.index('=') + 1:]
 
 
-def getAccessToken():
-    userId = 'ZE0956'
-    password = 'Colesprouse@490'
-    api_key = "irtkrxee8bs6fecn"
-    api_secret = "tvxt0yqzkkpkb90f6a78gliz3sk97ebe"
-    pin = '016479'
+def getAccessToken(localPath):
+    configParser = fetch_config(localPath)
+    userId = get_config(configParser, 'login', 'username')
+    password = get_config(configParser, 'login', 'password')
+    api_key = get_config(configParser, 'connection', 'api_key')
+    api_secret = get_config(configParser, 'connection', 'api_secret')
+    pin = get_config(configParser, 'login', 'pin')
 
     # Download the webdriver and give the correct path of the webdriver file below
-    browser = webdriver.Chrome(
-        '/Users/pp067807/Desktop/deleteLater/workSpace/dependencies/chromedriver')
-    browser.get('https://kite.trade/connect/login?v=3&api_key=irtkrxee8bs6fecn')
+    browser = webdriver.Chrome(get_config(configParser,'paths','chromeDriver'))
+    browser.get(get_config(configParser,'connection','endpoint_url'))
 
     browser.implicitly_wait(10)
 
