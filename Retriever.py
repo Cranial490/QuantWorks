@@ -20,16 +20,17 @@ def getRequestToken(ResponseUrl):
 
 
 def getAccessToken(localPath):
-    configParser = fetch_config(localPath)
-    userId = get_config(configParser, 'login', 'username')
-    password = get_config(configParser, 'login', 'password')
-    api_key = get_config(configParser, 'connection', 'api_key')
-    api_secret = get_config(configParser, 'connection', 'api_secret')
-    pin = get_config(configParser, 'login', 'pin')
+    configParser = util.fetch_config(localPath)
+    userId = util.get_config(configParser, 'login', 'username')
+    password = util.get_config(configParser, 'login', 'password')
+    api_key = util.get_config(configParser, 'connection', 'api_key')
+    api_secret = util.get_config(configParser, 'connection', 'api_secret')
+    pin = util.get_config(configParser, 'login', 'pin')
 
     # Download the webdriver and give the correct path of the webdriver file below
-    browser = webdriver.Chrome(get_config(configParser,'paths','chromeDriver'))
-    browser.get(get_config(configParser,'connection','endpoint_url'))
+    browser = webdriver.Chrome(util.get_config(
+        configParser, 'paths', 'chromeDriver'))
+    browser.get(util.get_config(configParser, 'connection', 'endpoint_url'))
 
     browser.implicitly_wait(10)
 

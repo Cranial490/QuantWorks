@@ -13,10 +13,10 @@ import util
 
 def setup_kite_instance(localPath):
     # get api_key from config file
-    configParser = util.fetch_config()
-    api_key = util.get_config(configParser,'connection','api_key')
+    configParser = util.fetch_config(localPath)
+    api_key = util.get_config(configParser, 'connection', 'api_key')
     kite = KiteConnect(api_key=api_key)
-    access_token = Retriever.getAccessToken()
+    access_token = Retriever.getAccessToken(localPath)
     try:
         kite.set_access_token(access_token)
     except Exception as e:
@@ -31,6 +31,7 @@ def get_historical_records():
     except Exception as e:
         print(e)
 
+
 def write_to_csv(candleData, localPath, instrument):
     if path.exists(localPath):
         print("Directory already exists")
@@ -43,15 +44,20 @@ def write_to_csv(candleData, localPath, instrument):
         for line in candleData:
             writer.writerow(line)
 
+
 def main():
     print("fetching records ....")
-    records = get_historical_records()
+    localPath = '/Users/pp067807/Desktop/deleteLater/workSpace/dependencies/config.properties'
+    print(os.getenv("ACCESSTOKEN"))
+    # kite = setup_kite_instance(localPath)
+    # print(kite.instruments())
+    # records = get_historical_records()
     # print(records)
     # write_to_csv(records)
-    parentDir = "/Users/pp067807/Desktop/deleteLater/workSpace/BackTestData"
-    instrument = "RELIANCE"
-    localPath = os.path.join(parentDir, instrument)
-    write_to_csv(records, localPath, instrument)
+    # parentDir = "/Users/pp067807/Desktop/deleteLater/workSpace/BackTestData"
+    # instrument = "RELIANCE"
+    # localPath = os.path.join(parentDir, instrument)
+    # write_to_csv(records, localPath, instrument)
 
 
 if __name__ == '__main__':
