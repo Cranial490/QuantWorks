@@ -10,55 +10,41 @@ from os import path
 import csv
 import util
 
-
-def setup_kite_instance(localPath):
-    # get api_key from config file
-    configParser = util.fetch_config(localPath)
-    api_key = util.get_config(configParser, 'connection', 'api_key')
-    kite = KiteConnect(api_key=api_key)
-    access_token = Retriever.getAccessToken(localPath)
+def get_historical_records(configPath,access_token,instrument_token,start,end,timeframe):
+    kite = util.setup_kite_instance(configPath,access_token)
     try:
-        kite.set_access_token(access_token)
-    except Exception as e:
-        print(e, "Error while setting access token")
-    return kite
-
-
-def get_historical_records():
-    kite = setup_kite_instance()
-    try:
-        return kite.historical_data(3821313, '2019-12-04', '2019-12-04', 'minute')
+        return kite.historical_data(instrument_token, start, end, timeframe)
     except Exception as e:
         print(e)
 
 
-def write_to_csv(candleData, localPath, instrument):
+def write_to_csv(candleData, localPath, file_name):
     if path.exists(localPath):
         print("Directory already exists")
     else:
         os.mkdir(localPath)
-    with open(path.join(localPath, instrument + '.csv'), 'w') as the_file:
+    with open(path.join(localPath, file_name + '.csv'), 'w') as the_file:
         fieldnames = ['date', 'open', 'high', 'low', 'close', 'volume']
         writer = csv.DictWriter(the_file, fieldnames=fieldnames)
         writer.writeheader()
         for line in candleData:
             writer.writerow(line)
 
+def store_historical_data(configPath,dataPath,instrument_token,startDate,endDate,timeframe,instrument_name,file_name):
+    config = util.fetch_config('./temp')
+    access_token = util.get_config(config,'temp', 'access_token')
+    records = get_historical_records(configPath,access_token,instrument_token,startDate, endDate,timeframe)
+    if len(records) > 0:
+        write_to_csv(records,path.join(dataPath,instrument_name),file_name)
+    else:
+        print("No data found for this date")
 
 def main():
-    print("fetching records ....")
-    localPath = '/Users/pp067807/Desktop/deleteLater/workSpace/dependencies/config.properties'
-    print(os.getenv("ACCESSTOKEN"))
-    # kite = setup_kite_instance(localPath)
-    # print(kite.instruments())
-    # records = get_historical_records()
-    # print(records)
-    # write_to_csv(records)
-    # parentDir = "/Users/pp067807/Desktop/deleteLater/workSpace/BackTestData"
-    # instrument = "RELIANCE"
-    # localPath = os.path.join(parentDir, instrument)
-    # write_to_csv(records, localPath, instrument)
-
+    configPath = '/Users/pp067807/Desktop/deleteLater/workSpace/dependencies/config.properties'
+    dataPath = '/Users/pp067807/Desktop/deleteLater/workSpace/BackTestData'
+    dates = util.get_dates(2016,1,1,2017,1,1)
+    for day in dates:
+        store_historical_data(configPath,dataPath,256265,day,day,'minute','NIFTY50',day)
 
 if __name__ == '__main__':
     main()
