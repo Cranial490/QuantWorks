@@ -5,6 +5,8 @@ from configparser import ConfigParser
 import csv
 from kiteconnect import KiteConnect
 from datetime import date, timedelta
+import pandas as pd
+import os
 """
 Reads config file from the localPath.
 
@@ -81,3 +83,27 @@ def get_dates(s_year,s_month,s_date,e_year,e_month,e_date):
         day = startDate + timedelta(days=i)
         date_list.append(day.strftime("%Y-%m-%d"))
     return date_list
+
+"""
+returns dataframe containing ohlc candle data according to the specified timeframe
+
+params:
+dataPath - path to the folder containing .csv data
+date - date for which data need to be fetched
+timeframe - timeframe for a candle e.g 1Min, 5Min, .... 
+"""
+def get_candles(dataPath,file_name,timeframe):
+    filePath = os.path.join(dataPath,file_name)
+    df = pd.read_csv(filePath)
+    df = df.set_index(pd.to_datetime(df['date']))
+    if timeframe !='1Min':
+        df = df.resample(timeframe).agg({
+        'open':'first',
+        'high':'max',
+        'low':'min',
+        'close':'last',
+        'volume': 'sum',
+        'oi': 'sum'
+        })
+
+    return df
