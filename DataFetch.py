@@ -24,7 +24,7 @@ def write_to_csv(candleData, localPath, file_name):
     else:
         os.mkdir(localPath)
     with open(path.join(localPath, file_name + '.csv'), 'w') as the_file:
-        fieldnames = ['date', 'open', 'high', 'low', 'close', 'volume']
+        fieldnames = ['date', 'open', 'high', 'low', 'close', 'volume', 'oi']
         writer = csv.DictWriter(the_file, fieldnames=fieldnames)
         writer.writeheader()
         for line in candleData:
@@ -42,9 +42,9 @@ def store_historical_data(configPath,dataPath,instrument_token,startDate,endDate
 def main():
     configPath = '/Users/pp067807/Desktop/deleteLater/workSpace/dependencies/config.properties'
     dataPath = '/Users/pp067807/Desktop/deleteLater/workSpace/BackTestData'
-    dates = util.get_dates(2016,1,1,2017,1,1)
+    dates = util.get_dates(2016,1,1,2016,1,20)
     for day in dates:
-        store_historical_data(configPath,dataPath,256265,day,day,'minute','NIFTY50',day)
+        store_historical_data(configPath,dataPath,197633,day,day,'minute','DABUR',day)
 
 if __name__ == '__main__':
     main()
