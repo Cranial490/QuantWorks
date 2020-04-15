@@ -1,48 +1,43 @@
-import logging, csv
-import pandas as pd
-from datetime import datetime, date
-import numpy as np
-from kiteconnect import KiteConnect
+import logging
 from kiteconnect import KiteTicker
+import util
 import Retriever
-import time
-
-def tokenList(kite):
-	return kite.instruments()
-
 logging.basicConfig(level=logging.DEBUG)
 
-api_key = "irtkrxee8bs6fecn"
-access_token = Retriever.getAccessToken()
-time.sleep(5)
-kite = KiteConnect(api_key=api_key)
+configPath = '/Users/pp067807/Desktop/deleteLater/workSpace/dependencies/config.properties'
 
-# print(kite.generate_session(request_token, api_secret))
+config = util.fetch_config(configPath)
+api_key = util.get_config(config, 'connection', 'api_key')
 
-kite.set_access_token(access_token)
+config = util.fetch_config('./temp')
+access_token = util.get_config(config, 'temp', 'access_token')
+print("Retrieved access token: " + access_token)
+kws = KiteTicker(api_key, access_token)
 
-kws = KiteTicker(api_key,access_token)
 
 def on_ticks(ws, ticks):
     # Callback to receive ticks.
     logging.debug("Starting the data stream")
     logging.debug("Ticks: {}".format(ticks))
 
+
 def on_connect(ws, response):
     # Callback on successful connect.
     # Subscribe to a list of instrument_tokens (RELIANCE and ACC here).
     logging.debug("Starting the connection")
-    tokenDict = tokenList(kite)
-    ws.subscribe([3821313])
     # Set RELIANCE to tick in `full` mode.
-    ws.set_mode(ws.MODE_FULL, [3821313])
-    logging.debug("successfully subscribed")
+    ws.subscribe([14451970])
+    ws.set_mode(ws.MODE_QUOTE, [14451970])
+    logging.debug("successfully subscribed: ")
+
 
 def on_close(ws, code, reason):
     # On connection close stop the main loop
     # Reconnection will not happen after executing `ws.stop()`
     print("Closing the connection")
     ws.stop()
+
+
 
 # Assign the callbacks.
 kws.on_ticks = on_ticks
@@ -52,4 +47,3 @@ kws.on_close = on_close
 # Infinite loop on the main thread. Nothing after this will run.
 # You have to use the pre-defined callbacks to manage subscriptions.
 kws.connect()
-

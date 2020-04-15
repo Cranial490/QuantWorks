@@ -46,12 +46,15 @@ localPath - path to the configuration file
 def write_config_file(configPath, specifier, config):
     with open(configPath, specifier) as f:
         config.write(f)
+
+
 """
 returns kite instance
 params:
 configPath - path for configuration file
 access_token - access token for kite api
 """
+
 
 def setup_kite_instance(configPath, access_token):
     configParser = fetch_config(configPath)
@@ -64,6 +67,7 @@ def setup_kite_instance(configPath, access_token):
         print(e, "Error while setting access token")
     return kite
 
+
 """
 returns a list of dates between two dates
 params:
@@ -74,7 +78,9 @@ e_year - end year
 e_month - end month
 e_date - end date
 """
-def get_dates(s_year,s_month,s_date,e_year,e_month,e_date):
+
+
+def get_dates(s_year, s_month, s_date, e_year, e_month, e_date):
     startDate = date(s_year, s_month, s_date)
     endDate = date(e_year, e_month, e_date)
     delta = endDate - startDate
@@ -84,6 +90,7 @@ def get_dates(s_year,s_month,s_date,e_year,e_month,e_date):
         date_list.append(day.strftime("%Y-%m-%d"))
     return date_list
 
+
 """
 returns dataframe containing ohlc candle data according to the specified timeframe
 
@@ -92,18 +99,20 @@ dataPath - path to the folder containing .csv data
 date - date for which data need to be fetched
 timeframe - timeframe for a candle e.g 1Min, 5Min, .... 
 """
-def get_candles(dataPath,file_name,timeframe):
-    filePath = os.path.join(dataPath,file_name)
+
+
+def get_candles(dataPath, file_name, timeframe):
+    filePath = os.path.join(dataPath, file_name)
     df = pd.read_csv(filePath)
     df = df.set_index(pd.to_datetime(df['date']))
-    if timeframe !='1Min':
+    if timeframe != '1Min':
         df = df.resample(timeframe).agg({
-        'open':'first',
-        'high':'max',
-        'low':'min',
-        'close':'last',
-        'volume': 'sum',
-        'oi': 'sum'
+            'open': 'first',
+            'high': 'max',
+            'low': 'min',
+            'close': 'last',
+            'volume': 'sum',
+            'oi': 'sum'
         })
 
     return df
