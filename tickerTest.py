@@ -1,18 +1,11 @@
 import logging
-from kiteconnect import KiteTicker
 import util
-import Retriever
+
 logging.basicConfig(level=logging.DEBUG)
 
 configPath = '/Users/pp067807/Desktop/deleteLater/workSpace/dependencies/config.properties'
 
-config = util.fetch_config(configPath)
-api_key = util.get_config(config, 'connection', 'api_key')
-
-config = util.fetch_config('./temp')
-access_token = util.get_config(config, 'temp', 'access_token')
-print("Retrieved access token: " + access_token)
-kws = KiteTicker(api_key, access_token)
+kws = util.get_ticker_instance(configPath)
 
 
 def on_ticks(ws, ticks):

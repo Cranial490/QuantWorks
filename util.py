@@ -2,8 +2,8 @@
 contains all the helper methods
 """
 from configparser import ConfigParser
-import csv
 from kiteconnect import KiteConnect
+from kiteconnect import KiteTicker
 from datetime import date, timedelta
 import pandas as pd
 import os
@@ -66,6 +66,16 @@ def setup_kite_instance(configPath, access_token):
     except Exception as e:
         print(e, "Error while setting access token")
     return kite
+
+
+def get_ticker_instance(configPath):
+    config = fetch_config(configPath)
+    api_key = get_config(config, 'connection', 'api_key')
+
+    config = fetch_config('./temp')
+    access_token = get_config(config, 'temp', 'access_token')
+    print("Retrieved access token: " + access_token)
+    return KiteTicker(api_key, access_token)
 
 
 """

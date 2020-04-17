@@ -10,18 +10,20 @@ from os import path
 import csv
 import util
 
-def get_historical_records(configPath,access_token,instrument_token,start,end,timeframe):
-    kite = util.setup_kite_instance(configPath,access_token)
+
+def get_historical_records(configPath, access_token, instrument_token, start, end, timeframe, continuous=False, oi=False):
+    kite = util.setup_kite_instance(configPath, access_token)
     try:
-        return kite.historical_data(instrument_token, start, end, timeframe)
+        return kite.historical_data(instrument_token, start, end, timeframe, continuous=continuous, oi=oi)
     except Exception as e:
         print(e)
 
 
 def write_to_csv(candleData, localPath, file_name):
     if path.exists(localPath):
-        print("Directory already exists")
+        pass
     else:
+        print("creating directory: " + localPath)
         os.mkdir(localPath)
     with open(path.join(localPath, file_name + '.csv'), 'w') as the_file:
         fieldnames = ['date', 'open', 'high', 'low', 'close', 'volume', 'oi']
@@ -30,21 +32,31 @@ def write_to_csv(candleData, localPath, file_name):
         for line in candleData:
             writer.writerow(line)
 
-def store_historical_data(configPath,dataPath,instrument_token,startDate,endDate,timeframe,instrument_name,file_name):
+
+def store_historical_data(configPath, dataPath, instrument_token, startDate, endDate, timeframe, instrument_name, file_name, continuous=False, oi=False):
     config = util.fetch_config('./temp')
-    access_token = util.get_config(config,'temp', 'access_token')
-    records = get_historical_records(configPath,access_token,instrument_token,startDate, endDate,timeframe)
-    if len(records) > 0:
-        write_to_csv(records,path.join(dataPath,instrument_name),file_name)
+    access_token = util.get_config(config, 'temp', 'access_token')
+    records = get_historical_records(
+        configPath, access_token, instrument_token, startDate, endDate, timeframe, continuous, oi)
+    if records != None:
+        if len(records) > 0:
+            write_to_csv(records, path.join(
+                dataPath, instrument_name), file_name)
+        else:
+            print("No data found for this date: " + startDate)
+
     else:
-        print("No data found for this date")
+        print("returned None for date: " + startDate)
+
 
 def main():
     configPath = '/Users/pp067807/Desktop/deleteLater/workSpace/dependencies/config.properties'
     dataPath = '/Users/pp067807/Desktop/deleteLater/workSpace/BackTestData'
-    dates = util.get_dates(2016,1,1,2016,1,20)
+    dates = util.get_dates(2020, 3, 15, 2020, 4, 10)
     for day in dates:
-        store_historical_data(configPath,dataPath,197633,day,day,'minute','DABUR',day)
+        store_historical_data(configPath, dataPath, 14351106,
+                              day, day, 'minute', 'NIFTY', day)
+
 
 if __name__ == '__main__':
     main()
