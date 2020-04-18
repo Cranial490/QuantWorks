@@ -4,6 +4,7 @@ class Orders:
                  exchange,
                  validity,
                  kite,
+                 disclosed_quantity=None,
                  live=False,
                  tag=None
                  ):
@@ -12,6 +13,7 @@ class Orders:
         self.live = live
         self.tag = tag
         self.kite = kite
+        self.disclosed_quantity = disclosed_quantity
 
     def market_order(self,
                      symbol,
@@ -21,37 +23,84 @@ class Orders:
                      quantity,
                      variety):
         if self.live:
-            return kite.place_order(variety=variety,
-                                    exchange=self.exchange,
-                                    tradingsymbol=symbol,
-                                    transaction_type=transaction_type,
-                                    quantity=quantity,
-                                    product=product,
-                                    order_type=order_type)
-        else:
-            execute_order()
-
-
-
-    def limit_order(self,
-                   symbol,
-                   order_type,
-                   transaction_type,
-                   product,
-                   quantity,
-                   variety,
-                   limitprice):
-        if(self.live):
-            return kite.place_order(variety=variety,
+            return kite.place_order(self,
+                                    variety=variety,
                                     exchange=self.exchange,
                                     tradingsymbol=symbol,
                                     transaction_type=transaction_type,
                                     quantity=quantity,
                                     product=product,
                                     order_type=order_type,
-                                    price=limitprice)
+                                    price=None,
+                                    validity=self.validity,
+                                    disclosed_quantity=self.disclosed_quantity,
+                                    trigger_price=None,
+                                    squareoff=None,
+                                    stoploss=None,
+                                    trailing_stoploss=None,
+                                    tag=self.tag
+                                    )
         else:
-            execute_order()
+            execute_order(self,
+                          variety=variety,
+                          exchange=self.exchange,
+                          tradingsymbol=symbol,
+                          transaction_type=transaction_type,
+                          quantity=quantity,
+                          product=product,
+                          order_type=order_type,
+                          price=None,
+                          validity=self.validity,
+                          disclosed_quantity=self.disclosed_quantity,
+                          trigger_price=None,
+                          squareoff=None,
+                          stoploss=None,
+                          trailing_stoploss=None,
+                          tag=self.tag)
+
+    def limit_order(self,
+                    symbol,
+                    order_type,
+                    transaction_type,
+                    product,
+                    quantity,
+                    variety,
+                    limitprice):
+        if self.live:
+            return kite.place_order(self,
+                                    variety=variety,
+                                    exchange=self.exchange,
+                                    tradingsymbol=symbol,
+                                    transaction_type=transaction_type,
+                                    quantity=quantity,
+                                    product=product,
+                                    order_type=order_type,
+                                    price=limitprice,
+                                    validity=self.validity,
+                                    disclosed_quantity=self.disclosed_quantity,
+                                    trigger_price=None,
+                                    squareoff=None,
+                                    stoploss=None,
+                                    trailing_stoploss=None,
+                                    tag=self.tag
+                                    )
+        else:
+            execute_order(self,
+                          variety=variety,
+                          exchange=self.exchange,
+                          tradingsymbol=symbol,
+                          transaction_type=transaction_type,
+                          quantity=quantity,
+                          product=product,
+                          order_type=order_type,
+                          price=limitprice,
+                          validity=self.validity,
+                          disclosed_quantity=self.disclosed_quantity,
+                          trigger_price=None,
+                          squareoff=None,
+                          stoploss=None,
+                          trailing_stoploss=None,
+                          tag=self.tag)
 
     def bracket_order(self,
                       symbol,
@@ -63,10 +112,10 @@ class Orders:
                       target,
                       trailing_stoploss,
                       variety,
-                      price
-                     ):
-        if(self.live):
-            return kite.place_order(variety=variety,
+                      price):
+        if self.live:
+            return kite.place_order(self,
+                                    variety=variety,
                                     exchange=self.exchange,
                                     tradingsymbol=symbol,
                                     transaction_type=transaction_type,
@@ -74,12 +123,31 @@ class Orders:
                                     product=product,
                                     order_type=order_type,
                                     price=price,
-                                    stoploss=stop_loss,
+                                    validity=self.validity,
+                                    disclosed_quantity=self.disclosed_quantity,
+                                    trigger_price=None,
                                     squareoff=target,
-                                    trailing_stoploss=trailing_stoploss
+                                    stoploss=stop_loss,
+                                    trailing_stoploss=trailing_stoploss,
+                                    tag=self.tag
                                     )
         else:
-            execute_order()
+            execute_order(self,
+                          variety=variety,
+                          exchange=self.exchange,
+                          tradingsymbol=symbol,
+                          transaction_type=transaction_type,
+                          quantity=quantity,
+                          product=product,
+                          order_type=order_type,
+                          price=price,
+                          validity=self.validity,
+                          disclosed_quantity=self.disclosed_quantity,
+                          trigger_price=None,
+                          squareoff=target,
+                          stoploss=stop_loss,
+                          trailing_stoploss=trailing_stoploss,
+                          tag=self.tag)
 
     def cover_order(self,
                     symbol,
@@ -88,16 +156,50 @@ class Orders:
                     product,
                     quantity,
                     stop_loss,
-                    target,
-                    trailing_stoploss,
-                    validity,
                     variety,
                     price,
                     trigger_price
                     ):
-        pass
+        if self.live:
+            return kite.place_order(self,
+                                    variety=variety,
+                                    exchange=self.exchange,
+                                    tradingsymbol=symbol,
+                                    transaction_type=transaction_type,
+                                    quantity=quantity,
+                                    product=product,
+                                    order_type=order_type,
+                                    price=price,
+                                    validity=self.validity,
+                                    disclosed_quantity=self.disclosed_quantity,
+                                    trigger_price=trigger_price,
+                                    squareoff=None,
+                                    stoploss=stop_loss,
+                                    trailing_stoploss=None,
+                                    tag=self.tag
+                                    )
+        else:
+            execute_order(self,
+                          variety=variety,
+                          exchange=self.exchange,
+                          tradingsymbol=symbol,
+                          transaction_type=transaction_type,
+                          quantity=quantity,
+                          product=product,
+                          order_type=order_type,
+                          price=price,
+                          validity=self.validity,
+                          disclosed_quantity=self.disclosed_quantity,
+                          trigger_price=trigger_price,
+                          squareoff=None,
+                          stoploss=stop_loss,
+                          trailing_stoploss=None,
+                          tag=self.tag)
 
     def modify_orders(self):
+        pass
+
+    def cancel_orders(self):
         pass
 
     def cancel_orders(self):
