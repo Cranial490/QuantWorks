@@ -7,6 +7,7 @@ from kiteconnect import KiteTicker
 from datetime import date, timedelta
 import pandas as pd
 import os
+
 """
 Reads config file from the localPath.
 
@@ -68,6 +69,13 @@ def setup_kite_instance(configPath, access_token):
     return kite
 
 
+"""
+returns kite ticker instance for websocket streaming
+params:
+configPath - path for configuration file
+"""
+
+
 def get_ticker_instance(configPath):
     config = fetch_config(configPath)
     api_key = get_config(config, 'connection', 'api_key')
@@ -107,7 +115,7 @@ returns dataframe containing ohlc candle data according to the specified timefra
 params:
 dataPath - path to the folder containing .csv data
 date - date for which data need to be fetched
-timeframe - timeframe for a candle e.g 1Min, 5Min, .... 
+timeframe - timeframe for a candle e.g 1Min, 5Min.
 """
 
 

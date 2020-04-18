@@ -3,12 +3,14 @@ DataFetch.py
 
 Fetches historical candle data for instruments and writes into a csv file.
 """
-from kiteconnect import KiteConnect
-import Retriever
 import os
 from os import path
 import csv
 import util
+
+"""
+fetches historical candle data from kite server, return list of candles
+"""
 
 
 def get_historical_records(configPath, access_token, instrument_token, start, end, timeframe, continuous=False, oi=False):
@@ -17,6 +19,11 @@ def get_historical_records(configPath, access_token, instrument_token, start, en
         return kite.historical_data(instrument_token, start, end, timeframe, continuous=continuous, oi=oi)
     except Exception as e:
         print(e)
+
+
+"""
+writes the data to csv files
+"""
 
 
 def write_to_csv(candleData, localPath, file_name):
@@ -31,6 +38,11 @@ def write_to_csv(candleData, localPath, file_name):
         writer.writeheader()
         for line in candleData:
             writer.writerow(line)
+
+
+"""
+helper for writing data to csv
+"""
 
 
 def store_historical_data(configPath, dataPath, instrument_token, startDate, endDate, timeframe, instrument_name, file_name, continuous=False, oi=False):
@@ -52,6 +64,7 @@ def store_historical_data(configPath, dataPath, instrument_token, startDate, end
 def main():
     configPath = '/Users/pp067807/Desktop/deleteLater/workSpace/dependencies/config.properties'
     dataPath = '/Users/pp067807/Desktop/deleteLater/workSpace/BackTestData'
+
     dates = util.get_dates(2020, 3, 15, 2020, 4, 10)
     for day in dates:
         store_historical_data(configPath, dataPath, 14351106,
