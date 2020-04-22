@@ -1,4 +1,5 @@
 import positionManager as pm
+import util
 positions = {}
 pm.update_positions(positions, 'A', 5, 10, 'BUY')
 pm.update_positions(positions, 'A', 7, 10, 'BUY')

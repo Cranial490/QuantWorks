@@ -40,7 +40,7 @@ def update_positions(positions, ticker, price, quantity, transaction_type):
 
       positions[ticker]['LTP'] = price
 
-      positions[ticker]['realized_PnL'] = c alculate_realized_PnL(positions=positions, ticker=ticker, price=price, quantity=quantity, transaction_type=transaction_type)
+      positions[ticker]['realized_PnL'] = calculate_realized_PnL(positions=positions, ticker=ticker, price=price, quantity=quantity, transaction_type=transaction_type)
 
       positions[ticker]['Qty'] = update_quantity(positions=positions, ticker=ticker, price=price, quantity=quantity, transaction_type=transaction_type)
 
