@@ -63,27 +63,3 @@ def place_order(positions, ticker, price, quantity, transaction_type):
       update_positions(positions,ticker, price, quantity, transaction_type)
   else:
     update_positions(positions,ticker, price, quantity, transaction_type)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
