@@ -47,3 +47,43 @@ def update_positions(positions, ticker, price, quantity, transaction_type):
       positions[ticker]['P&L'] = calculate_pnl(positions=positions, ticker=ticker, price=price, quantity=quantity)
 
       positions[ticker]['CurrValue'] = (abs(positions[ticker]['Qty'] * positions[ticker]['LTP']))
+
+def place_order(positions, ticker, price, quantity, transaction_type):
+  if ticker not in positions:
+    update_positions(positions, ticker, price, quantity, transaction_type)
+
+  elif ((positions[ticker]['Qty'] > 0 and transaction_type == 'SELL') or (positions[ticker]['Qty'] < 0 and transaction_type == 'BUY')):
+    if quantity > abs(positions[ticker]['Qty']):
+      rev_qty = quantity - abs(positions[ticker]['Qty'])
+      update_positions(positions,ticker, price, positions[ticker]['Qty'], transaction_type)
+      positions[ticker]['AvgPrice'] = price
+      positions[ticker]['LTP'] = price
+      update_positions(positions,ticker, price, rev_qty, transaction_type)
+    else:
+      update_positions(positions,ticker, price, quantity, transaction_type)
+  else:
+    update_positions(positions,ticker, price, quantity, transaction_type)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
