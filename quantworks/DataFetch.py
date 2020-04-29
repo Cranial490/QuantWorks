@@ -6,7 +6,7 @@ Fetches historical candle data for instruments and writes into a csv file.
 import os
 from os import path
 import csv
-import util
+from quantworks import util
 
 """
 fetches historical candle data from kite server, return list of candles
@@ -62,8 +62,8 @@ def store_historical_data(configPath, dataPath, instrument_token, startDate, end
 
 
 def main():
-    configPath = '/Users/pp067807/Desktop/deleteLater/workSpace/dependencies/config.properties'
-    dataPath = '/Users/pp067807/Desktop/deleteLater/workSpace/BackTestData'
+    configPath = '/Users/akshaykhanna/Documents/QuantWorks/config.properties'
+    dataPath = '/Users/akshaykhanna/Documents/testingQuantworks/BackTestData'
 
     dates = util.get_dates(2020, 3, 15, 2020, 4, 10)
     for day in dates:

@@ -1,5 +1,5 @@
 import logging
-import util
+from quantworks import util
 
 logging.basicConfig(level=logging.DEBUG)
 

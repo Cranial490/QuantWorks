@@ -1,8 +1,8 @@
 """
 setup.py - fetches access token from kite and list of intruments for specified exchange
 """
-import Retriever
-import util
+from quantworks import Retriever
+from quantworks import util
 from configparser import ConfigParser
 from os import path
 import csv
@@ -20,7 +20,7 @@ def write_dict_to_csv(data):
 
 
 def main():
-    configPath = '/Users/pp067807/Desktop/deleteLater/workSpace/dependencies/config.properties'
+    configPath = '/Users/akshaykhanna/Documents/QuantWorks/quantworks/config.properties'
     exchange = 'NSE'
     # checking if access token in local else fetching from api
     if path.exists('./temp') == False:

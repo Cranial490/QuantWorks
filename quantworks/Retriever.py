@@ -9,7 +9,7 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from kiteconnect import KiteConnect
-import util
+from quantworks import util
 
 
 def getRequestToken(ResponseUrl):
@@ -28,8 +28,11 @@ def getAccessToken(localPath):
     pin = util.get_config(configParser, 'login', 'pin')
 
     # Download the webdriver and give the correct path of the webdriver file below
+    #link = "https://accounts.google.com"
+    #driver = webdriver.Chrome(executable_path='/Users/akshaykhanna/Documents/testingQuantworks/chromedriver/chromedriver.dms')
+    #driver.get(link)
     browser = webdriver.Chrome(util.get_config(
-        configParser, 'paths', 'chromeDriver'))
+        configParser, 'paths', 'chromedriver'))
     browser.get(util.get_config(configParser, 'connection', 'endpoint_url'))
 
     browser.implicitly_wait(10)
