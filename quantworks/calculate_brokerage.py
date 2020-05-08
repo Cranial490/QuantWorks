@@ -5,7 +5,7 @@ import csv, sys
 
 # net pnl for commodities = num_of_lots*fabs(entry-exit)*pnl_for_1_rupee
 net_pnl = 0.0 # pnl for the day
-capital = 0.0 # total trading capital in the account
+capital = 100000.0 # total trading capital in the account #should be less than 1 billion rupees
 NON_AGRI = ['ALUMINI','ALUMINIUM','BRENTCRUDE','COPPER','COPPERM','CRUDEOIL','CRUDEOILM','GOLD','GOLDGUINEA','GOLDM','GOLD GLOBAL','GOLDPETAL','GOLDPTLDEL','LEAD','LEADMINI','NATURALGAS','NICKEL','NICKELM','SILVER','SILVER1000','SILVERM','SILVERMIC','ZINC','ZINCMINI'] # use the below link to populate the list
 AGRI = ['CARDAMOM', 'COTTON', 'CPO', 'KAPAS', 'MENTHAOIL'] 
 COMMODITY_MARGIN = dict() # key = tradingsymbol, value = {MIS_MARGIN:, pnl_for_1_rupee:}
@@ -27,16 +27,17 @@ in "NSE" and "MCX"
 class Model:
 
 	def equity_margin(self):
-		with open('./resources/equity_margin.csv') as csv_file:
+		with open('../resources/equity_margin.csv') as csv_file:
 			csv_reader = csv.reader(csv_file, delimiter=',')
 			line_count=0
 			for row in csv_reader:
 				if line_count == 0:
 					pass
 				else:
-					stock = row[1].rsplit(':')[0]
-					margin = row[2].rsplit('X')[0]
-					EQ_MARGIN[stock] = margin
+					stock = row[0]
+					margin = row[1].rsplit('x')[0]
+					if margin.isdigit():
+						EQ_MARGIN[stock] = float(margin)
 					#print(stock, margin)
 				line_count += 1
 	# can be a part of util class
@@ -51,7 +52,7 @@ class Model:
 	def commodities_margin(self):
 		#initialize_dict()
 		#print(COMMODITY_MARGIN)
-		with open('./resources/pnl_for_1_rupee_commodities.csv') as csv_file:
+		with open('../resources/pnl_for_1_rupee_commodities.csv') as csv_file:
 			csv_reader = csv.reader(csv_file, delimiter=',')
 			line_count=0
 			for row in csv_reader:
@@ -60,19 +61,23 @@ class Model:
 				else:
 					stock = row[0]
 					pnl_per_rupee = row[2]
-					COMMODITY_MARGIN[stock]['pnl_per_rupee'] = float(pnl_per_rupee)
+					if(pnl_per_rupee.isdigit()):
+						COMMODITY_MARGIN[stock]['pnl_per_rupee'] = float(pnl_per_rupee)
 					#print(stock, margin)
 				line_count += 1
-		with open('./resources/MIS_MARGIN_COMMODITIES.csv') as csv_file:
+		with open('../resources/MIS_MARGIN_COMMODITIES.csv') as csv_file:
 			csv_reader = csv.reader(csv_file, delimiter=',')
 			line_count=0
 			for row in csv_reader:
 				if line_count == 0:
 					pass
 				else:
-					stock = row[1]
-					MIS_MARGIN = row[5]
-					COMMODITY_MARGIN[stock]['MIS_MARGIN'] = float(MIS_MARGIN)
+					stock = row[0]
+					MIS_MARGIN = row[4]
+					if(MIS_MARGIN != "0"):
+						COMMODITY_MARGIN[stock]['MIS_MARGIN'] = float(MIS_MARGIN)
+					else:
+						COMMODITY_MARGIN[stock]['MIS_MARGIN'] = 1000000000.0
 					#print(stock, margin)
 				line_count += 1
 	'''
@@ -97,28 +102,23 @@ class Model:
 				# assuming Limit order only 
 	'''
 
-	def margin_calculator(self, exchange, tradingsymbol, variety): # variety - BO/CO/regular/AMO, also can send the order ID for ltp
-		# margin calculation for BO/CO -> upto 20 times leverage - https://zerodha.com/margin-calculator/BracketCover/ 
+	def margin_calculator(self, exchange, tradingsymbol, variety, ltp): # variety - BO/CO/regular/AMO, also can send the order ID for ltp
+		# margin calculation for BO/CO  - https://zerodha.com/margin-calculator/BracketCover/
 		# for BO/CO margin = min(SL * num_of_stocks, 0.025*entry)
 		# margin calculation for equity (Regular order) - EQ_MARGIN[stock]
 		# for regular order margin, store the margins in a dict()
 		# margin calculation for commodities - https://zerodha.com/margin-calculator/Commodity/
-		# MIS margins from the list 
+		# MIS margins from the list
+		num_of_stocks = 0
 		if exchange == 'NSE':
-			if variety == 'regular':
-				margin = float(EQ_MARGIN[tradingsymbol])
-				num_of_stocks = margin / tradingsymbol[ltp] 
-			else:
-				if EQ_MARGIN[tradingsymbol] == '3':
-					margin = capital * 4.2
-				elif EQ_MARGIN[tradingsymbol] == '12.5':
-					margin = capital * 15.2
-				num_of_stocks = margin / tradingsymbol[ltp] # margin divided by last traded price of the trading symbol
+			margin = EQ_MARGIN.get(tradingsymbol, 1.0)
+			#num_of_stocks = margin / tradingsymbol[ltp] # margin divided by last traded price of the trading symbol
+			num_of_stocks = (capital * margin) / ltp
 
 		else:
 			if capital > COMMODITY_MARGIN[tradingsymbol]['MIS_MARGIN']:
 				num_of_stocks = int(capital / COMMODITY_MARGIN[tradingsymbol]['MIS_MARGIN'])
-		return num_of_stocks
+		return int(num_of_stocks)
 
 		# return num_of_stocks that can be bought according to risk management and leverage provided
 
@@ -155,12 +155,25 @@ class Model:
 
 obj = Model()
 obj.equity_margin()
-#print(EQ_MARGIN)
 obj.initialize_dict()
+print(EQ_MARGIN)
+print(obj.margin_calculator('NSE', 'AARTIDRUGS', 'BO', 2098))
+print(obj.margin_calculator('NSE', 'YESBANK', 'BO', 1000))
+obj.commodities_margin()
+print(COMMODITY_MARGIN['CRUDEOIL']['pnl_per_rupee'])
+print(COMMODITY_MARGIN['COPPER']['MIS_MARGIN'])
+print(COMMODITY_MARGIN['NATURALGAS'])
+print(COMMODITY_MARGIN['MENTHAOIL'])
+print(COMMODITY_MARGIN)
+print(obj.margin_calculator('MCX', 'CRUDEOIL', 'regular', 1800))
+
+'''
+#print(EQ_MARGIN)
 obj.commodities_margin()
 #print(COMMODITY_MARGIN)
 #print(COMMODITY_MARGIN['COTTON']['pnl_per_rupee'])
 print(obj.brokerage_calculator(4327, 4322, 3, 1, 'MCX', 'CRUDEOILM'))
 #print(margin_calculator('NSE', 'ACC', 'BO'))
+'''
 
 

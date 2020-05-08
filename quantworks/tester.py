@@ -2,14 +2,13 @@ from quantworks import positionManager as pm
 from quantworks import util
 positions = {}
 
-''' Tc1
+
 pm.place_order(positions, 'A', 10, 10, 'SELL')
 print(positions)
 pm.place_order(positions, 'A', 12, 5, 'BUY')
 print(positions)
 pm.place_order(positions, 'A', 15, 7, 'BUY')
 print(positions)
-'''
 
 ''' Tc 2
 pm.place_order(positions, 'A', 10, 10, 'BUY')
@@ -50,18 +49,18 @@ print(positions)
 '''
 
 # Tc4
-pm.place_order(positions, 'A', 10, 10, 'SELL')
-print(positions['A'])
-pm.place_order(positions, 'B', 10, 10, 'BUY')
-print(positions['B'])
-pm.place_order(positions, 'A', 12, 5, 'BUY')
-print(positions['A'])
-pm.place_order(positions, 'B', 12, 5, 'SELL')
-print(positions['B'])
-pm.place_order(positions, 'A', 15, 7, 'BUY')
-print(positions['A'])
-pm.place_order(positions, 'B', 15, 7, 'SELL')
-print(positions['B'])
-print(positions)
+# pm.place_order(positions, 'A', 10, 10, 'SELL')
+# print(positions['A'])
+# pm.place_order(positions, 'B', 10, 10, 'BUY')
+# print(positions['B'])
+# pm.place_order(positions, 'A', 12, 5, 'BUY')
+# print(positions['A'])
+# pm.place_order(positions, 'B', 12, 5, 'SELL')
+# print(positions['B'])
+# pm.place_order(positions, 'A', 15, 7, 'BUY')
+# print(positions['A'])
+# pm.place_order(positions, 'B', 15, 7, 'SELL')
+# print(positions['B'])
+# print(positions)
 
 
