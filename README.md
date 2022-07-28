@@ -3,6 +3,8 @@ Python wrapper for [kite API](https://kite.trade/docs/connect/v3/) to test tradi
 [Kite Connect](https://github.com/zerodha/pykiteconnect/blob/master) gives their users direct access to the Indian stock market and makes executing orders using python script in real time accessible. One of the main concern with the API is complex the login flow which we automate.  
 
 ### Login
+![kite-connect-flow](https://user-images.githubusercontent.com/23013907/181392995-2d619eb9-5a5b-4431-98c1-b89430e523db.png)
+
 We make use of Selenium to fetch access token from kite.<br>
 - First you need to download webdriver for your browser for Selenium. [Here](https://chromedriver.chromium.org/downloads) is the link for chrome webdriver.
 - Login process makes use of `config.properties` file to fetch the user details such as `api_key` and `api_secret` to access the API. You can generate your own config.properties file using the `config.py`. Make sure you **dont share** the `config.properties` file publicly as it contains accounts sensitive information. Give the path to the webdriver in `cofig.py`.
